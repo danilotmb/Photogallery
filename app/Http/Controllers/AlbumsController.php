@@ -30,6 +30,9 @@ class AlbumsController extends Controller
         if ($request->has('album_name')) {
             $queryBuilder->where('album_name', 'like', $request->input('album_name') . '%');
         }
+        if ($request->has('category_id')) {
+            $queryBuilder->whereHas('categories', fn( $q) => $q->where('category_id',$request->category_id)) ;
+        }
         $albums = $queryBuilder->paginate($albumsPerPage);
     
         return view('albums.albums', ['albums' => $albums]);

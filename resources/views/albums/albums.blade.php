@@ -46,7 +46,7 @@
 
                             <div class="col-md-3" >
                                 @if($album->photos_count)          
-                                    <a title="View all images" href="{{route('albums.images', $album)}}" class="btn btn-primary">
+                                    <a title="View all images" href="{{route('albums.images', $album)}}" class="btn btn-primary mr-2">
                                         <i class="bi bi-image"></i> {{$album->photos_count}}
                                     </a>
                                 @else          
@@ -83,7 +83,7 @@
                         <div
 
                             class="col-md-8 offset-md-2 d-flex justify-content-center">
-                            {{$albums->links('vendor.pagination.bootstrap-4')}}
+                            {{$albums->links('vendor.pagination.bootstrap-5')}}
                         </div>
                     </div>
                 </td>

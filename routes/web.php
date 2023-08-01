@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlbumsController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\PhotosController;
 use App\Models\User;
@@ -23,7 +24,9 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function ()
     Route::get('/albums/{album}/images', [AlbumsController::class, 'getImages'])->name('albums.images');
 
     Route::resource('photos', PhotosController::class);
-    
+
+    Route::resource('categories', CategoryController::class);
+ 
 });
 
 Route::get('/dashboard', function () {

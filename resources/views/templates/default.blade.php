@@ -56,6 +56,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('photos.create')}}">New Image</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('categories.index')}}">Categories</a>
+                        </li>
                     </ul>
             </div> {{--aggiunto per il css, rimuovere in caso di problemi--}}
                     <div class="navbar-nav me-200 mb-2 mb-lg-200" id="navbarCollapse">

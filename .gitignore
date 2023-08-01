@@ -2,4 +2,4 @@ node_modules
 node_modules
 .DS_STORE
 vendor/*
-.enc.example
+.env.example

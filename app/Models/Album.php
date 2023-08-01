@@ -8,23 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Album extends Model
 {
-
-    public function User()
-{
-    return $this->belongsTo(User::class);
-}
-
     use HasFactory;
     use SoftDeletes; 
-    // protected $fillable = ['album_name', 'description','user_id', 'album_thumb'];
+
+
+    protected $fillable = ['album_name', 'description','user_id', 'album_thumb'];
     protected $guarded = ['id'];
 
-    public function photo() 
-    {
-
-        return $this ->hasMany(Photo::class);  
-
-    }
 
     public function getPathAttribute()
     {
@@ -42,6 +32,32 @@ class Album extends Model
       
         return $this->hasMany(Photo::class, 'album_id', 'id');
     }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function categories()
+    {
+        // album_category , album_id, category_id
+        return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+
+    
+    
+   
+
+    public function photo() 
+    {
+
+        return $this ->hasMany(Photo::class);  
+
+    }
+
+    
+
+   
 
    // public function users ()
     //{
