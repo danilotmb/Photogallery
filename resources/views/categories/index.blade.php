@@ -113,33 +113,35 @@
             // add Category ajax
             $('#manageCategoryForm .btn-primary ').on('click',function (ele) {
 
-                    ele.preventDefault();
-                    var f = $('#manageCategoryForm');
-                    console.log(f);
-                    var data  = f.serialize();
-                    var urlCategory = f.attr('action');
+            ele.preventDefault();
+            var f = $('#manageCategoryForm');
+            console.log(f);
+            var data  = f.serialize();
+            var urlCategory = f.attr('action');
 
-                    $.ajax(
-                        urlCategory,
-                        {
-                            method: 'POST',
-                            data : data
+            $.ajax(
+                urlCategory,
+                {
+                    method: 'POST',
+                    data : data
 
-                        }
-                    ).done(response => {
+                }
+            ).done(response => {
 
-                        $('#methodType').remove();
-                        selectedCategory = null;
-                        f[0].action = categoryUrl;
-                        alert(response.message);
-                        if(response.success){
-                            f[0].category_name.value = '';
-                            f[0].reset();
-                        } else {
-                            alert('Problem contacting server');
-                        }
-                    })
+                $('#methodType').remove();
+                selectedCategory = null;
+                f[0].action = categoryUrl;
+                alert(response.message);
+                if(response.success){
+                    f[0].category_name.value = '';
+                    f[0].reset();
+                } else {
+                    alert('Problem contacting server');
+                }
+            })
             });
+
+
             
             // update category ajax
             // add Category ajax
