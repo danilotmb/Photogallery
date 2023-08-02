@@ -23,6 +23,10 @@
 
     </style>
 
+<script>
+    window.Laravel = @json( ['csrf_token' => csrf_token()] );
+</script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
 </head>
