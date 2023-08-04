@@ -49,6 +49,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
     use SoftDeletes;
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -77,6 +78,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'date:D, M j, Y H:i',
+        'deleted_at' => 'date:D, M j, Y H:i'
     ];
 
     public function albums(): HasMany
