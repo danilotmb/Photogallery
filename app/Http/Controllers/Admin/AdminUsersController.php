@@ -25,8 +25,7 @@ class AdminUsersController extends Controller
         $id = $user->id;
 
 
-        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" 
-                            class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+        $buttonEdit= '<a class="btn btn-sm btn-secondary" style="cursor:default" disable><i  class="bi bi-pen"></i></a>&nbsp;';
 
 
         if($user->deleted_at)
@@ -38,6 +37,8 @@ class AdminUsersController extends Controller
             $btnTitle = 'Restore';
         }
         else{
+            $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" 
+                            class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
             $deleteRoute = route('users.destroy', ['user' => $id]);
             $iconDelete = '<i class="bi bi-trash"></i>';
             $btnClass = 'btn-warning';
@@ -106,21 +107,25 @@ class AdminUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        return view('admin.editUser', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  int  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->user_role = $request->user_role;
+        $user->save();
+        return redirect()->route('users.index');
     }
 
     /**
