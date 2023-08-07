@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserFormRequest;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 
 class AdminUsersController extends Controller
@@ -62,7 +64,7 @@ class AdminUsersController extends Controller
     public function getUsers()
     {
         
-        $users =  User::select(['id','name','email','user_role','created_at','deleted_at'])->orderBy('name')->withTrashed()->get();
+        $users =  User::select(['id','name','email','user_role','created_at','deleted_at'])->withTrashed()->orderBy('created_at', 'desc')->get();
         $result = DataTables::of($users)->addColumn('action', function ($user) {
             return  $this->getUserButtons($user);
 
@@ -76,7 +78,8 @@ class AdminUsersController extends Controller
      */
     public function create()
     {
-        //
+        $user = new User();
+        return view('admin.edituser', compact('user'));
     }
 
     /**
@@ -85,9 +88,16 @@ class AdminUsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserFormRequest $request)
     {
-        //
+        $user = new User();
+        $user->fill($request->only(['name','email','user_role']));
+        $user->password = Hash::make($request->email);
+
+        $res = $user->save();
+        $message = $res ? 'User created': 'Problem creating user';
+        session()->flash('message', $message);
+        return  redirect()->route('users.index');
     }
 
     /**
@@ -119,12 +129,14 @@ class AdminUsersController extends Controller
      * @param  int  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserFormRequest $request, User $user)
     {
         $user->name = $request->name;
         $user->email = $request->email;
         $user->user_role = $request->user_role;
-        $user->save();
+        $res = $user->save();
+        $message = $res ? 'User updated' : 'Problem updating user';
+        session()->flash('message' , $message);
         return redirect()->route('users.index');
     }
 
