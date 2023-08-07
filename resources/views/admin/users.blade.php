@@ -26,6 +26,7 @@
 
       var dataTable =  $('#users-table').DataTable({
             processing: true,
+            paging: true,
             serverSide: true,
             ajax: '{{route('admin.getUsers')}}',
             columns: [
@@ -40,10 +41,11 @@
         });
 
 
-                    $('#users-table').on('click', '.btn-danger', function (ele) {
+                    $('#users-table').on('click', '.ajax', function (ele) {
                     ele.preventDefault();
-
-                    if(!confirm('Do you really want to delete this record')){
+                    const isDelete = this.id.indexOf('delete')>=0;
+                    const msg = isDelete ? 'Do you really want to delete this record' : 'Do you really want to restore this record?';
+                    if(!confirm(msg)){
                         return false;
                     }
 
@@ -54,7 +56,7 @@
                     $.ajax(
                         urlUsers,
                         {
-                            method: 'DELETE',
+                            method: isDelete ? 'DELETE' : 'PATCH',
                             data : {
                                 '_token' : window.Laravel.csrf_token
 
@@ -67,7 +69,7 @@
                                         tr.parentNode.removeChild(tr);
                                     }
                                      dataTable.ajax.reload();
-                                     alert('User deleted correctly');
+                                     alert(isDelete ? 'User deleted correctly' : 'User restored correctly');
                                         
 
                                 } else {

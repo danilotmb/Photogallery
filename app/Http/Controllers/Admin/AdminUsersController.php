@@ -25,12 +25,35 @@ class AdminUsersController extends Controller
         $id = $user->id;
 
 
-        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+        $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" 
+                            class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
 
 
-        $buttonDelete = '<a  href="'.route('users.destroy', ['user'=>$id]).'" title="soft delete" id="delete-'.$id.'" class="ajax btn-danger btn btn-sm "><i class="bi bi-trash"></i></a>&nbsp;';
+        if($user->deleted_at)
+        {
+            $deleteRoute = route('admin.userRestore', ['user' => $id]);
+            $btnClass = 'btn-success';
+            $iconDelete = '<i class="bi bi-arrow-clockwise"></i>';
+            $btnId = 'restore-'.$id;
+            $btnTitle = 'Restore';
+        }
+        else{
+            $deleteRoute = route('users.destroy', ['user' => $id]);
+            $iconDelete = '<i class="bi bi-trash"></i>';
+            $btnClass = 'btn-warning';
+            $btnId = 'delete-'.$id;
+            $btnTitle = 'Soft Delete';
 
-        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" class="ajax btn btn-sm btn-danger"><i class="bi bi-exclamation-triangle"></i></i> </a>';
+
+
+
+
+        }
+        $buttonDelete = "<a  href='$deleteRoute' title='$btnTitle' id='$btnId'
+                            class=' ajax $btnClass btn btn-sm '>$iconDelete</a>&nbsp;";
+
+        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" 
+                            class="ajax btn btn-sm btn-danger"><i class="bi bi-exclamation-triangle"></i></i> </a>';
 
         return $buttonEdit.$buttonDelete.$buttonForceDelete;
     }
@@ -111,6 +134,13 @@ class AdminUsersController extends Controller
         $user = User::withTrashed()->findOrFail($id);
         $hard = \request('hard', '');
         $res = $hard?$user->forceDelete() : $user->delete();
+        return ''.$res;
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $res = $user->restore();
         return ''.$res;
     }
 }
