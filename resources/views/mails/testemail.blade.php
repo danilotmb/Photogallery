@@ -1,0 +1,1 @@
+<h1>Ciao {{$user->name}} </h1>

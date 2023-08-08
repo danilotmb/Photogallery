@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewAlbumCreated;
 use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
+
 use App\Models\Photo;
 use DB;
 use Illuminate\Http\Request;
@@ -58,27 +60,28 @@ class AlbumsController extends Controller
      */
     public function store(AlbumRequest $request)
     {
-        $this->authorize(Album::class);
-        $data = $request->only(['album_name', 'description']);
-        $album = new Album();
-        $album->album_name = $data['album_name'];
-        $album->description = $data['description'];
-        $album->user_id = Auth::id();
-        $album->album_thumb = '/';
-        $res = $album->save();
 
-        if($request->hasFile('album_thumb'))
-        {
-            $this->processFile($request, $album);
-            $res = $album->save();
+        $album = new Album();
+        $album->album_name = request()->input('album_name');
+        $album->album_thumb = '/';
+        $album->description = request()->input('description');
+        $album->user_id = Auth::id();
+        $res = $album->save();
+        if ($res) {
+            event(new NewAlbumCreated($album));
+            if($request->has('categories')){
+                $album->categories()->attach($request->input('categories'));
+            }
+            if ($this->processFile($album->id, $request, $album)) {
+                $album->save();
+            }
         }
-        
-        
-        $message = 'Album ' . $data['album_name'];
-        $message .= $res ? ' created' : ' not created';
-        session()->flash('message', $message);
+
+        $name = request()->input('name');
+        $messaggio = $res ? 'Album   ' . $name . ' Created' : 'Album ' . $name . ' was not crerated';
         return redirect()->route('albums.index');
     }
+
 
     /**
      * Display the specified resource.
@@ -163,13 +166,23 @@ class AlbumsController extends Controller
     }
 
 
-    public function processFile ( Request $request, Album $album)
+    private function processFile($id, Request $req, $album): bool
     {
-        $file = $request->file('album_thumb');
-        $filename= $album ->id.'.'.$file->extension();
-        $thumbnail= $file ->storeAs(config('filesystems.album_thumbnail_dir'), $filename );
-        $album->album_thumb = $thumbnail;
-        $album->save();
+
+        if (!$req->hasFile('album_thumb')) {
+            return false;
+        }
+
+        $file = $req->file('album_thumb');
+        if (!$file->isValid()) {
+            return false;
+        }
+
+
+        $filename = $id . '.' . $file->extension();
+        $filename = $file->storeAs(env('IMG_DIR'), $filename);
+        $album->album_thumb = $filename;
+        return true;
     }
 
     public function getImages(Album $album)
