@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\NewAlbumCreated;
 use App\Http\Requests\AlbumRequest;
 use App\Models\Album;
-
+use App\Models\Category;
 use App\Models\Photo;
 use DB;
 use Illuminate\Http\Request;
@@ -47,9 +47,13 @@ class AlbumsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        return view('albums.createalbum')->withAlbum(new Album);
-    }
+{
+    $album = new Album();
+    $selectedCategories = [];  // Inizializza l'array vuoto per le categorie selezionate
+    $categories = Category::all();  // Recupera tutte le categorie
+
+    return view('albums.createalbum', compact('album', 'categories', 'selectedCategories'));
+}
 
     /**
      * Store a newly created resource in storage.
@@ -60,27 +64,35 @@ class AlbumsController extends Controller
      */
     public function store(AlbumRequest $request)
     {
-
         $album = new Album();
         $album->album_name = request()->input('album_name');
-        $album->album_thumb = '/';
         $album->description = request()->input('description');
         $album->user_id = Auth::id();
+        $album->album_thumb = '';
+        
         $res = $album->save();
-        if ($res) {
-            event(new NewAlbumCreated($album));
-            if($request->has('categories')){
-                $album->categories()->attach($request->input('categories'));
-            }
-            if ($this->processFile($album->id, $request, $album)) {
-                $album->save();
-            }
+        
+
+        if ($request->hasFile('album_thumb')) {
+            $album_thumb = $this->processFile($album->id, $request, $album);
+            $album->album_thumb = $album_thumb;
         }
 
+        $res = $album->update();
+    
+        if ($res) {
+            event(new NewAlbumCreated($album));
+            if ($request->has('categories')) {
+                $album->categories()->attach($request->input('categories'));
+            }
+        }
+    
         $name = request()->input('name');
-        $messaggio = $res ? 'Album   ' . $name . ' Created' : 'Album ' . $name . ' was not crerated';
-        return redirect()->route('albums.index');
+        $messaggio = $res ? 'Album   ' . $name . ' Created' : 'Album ' . $name . ' was not created';
+        return redirect()->route('albums.index')->with('message', $messaggio);
     }
+    
+    
 
 
     /**
@@ -108,14 +120,9 @@ class AlbumsController extends Controller
      */
     public function edit(Album $album)
     {
-        $this->authorize($album);
-        /*if($album->user_id !== Auth::id())
-        {
-            abort(401);
-        }
-        */
-
-        return view('albums.editalbum')->withAlbum($album);
+        $categories = Category::orderBy('category_name')->get();
+        $selectedCategories = $album->categories->pluck('id')->toArray();
+        return view('albums.editalbum')->with(compact('categories','album', 'selectedCategories'));
     }
 
     /**
@@ -126,22 +133,34 @@ class AlbumsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(AlbumRequest $request, Album $album)
-    {
-        $this->authorize($album);
-        $data = $request->only(['album_name', 'description']);
-        $album->album_name = $data['album_name'];
-        $album->description = $data['description'];
-        if ($request->hasFile('album_thumb')) {
-
-            $this->processFile($request, $album);
+    public function update(AlbumRequest $req, Album $album)
+{
+    $album->album_name = $req->input('album_name');
+    $album->description = $req->input('description');
+    $album->user_id = Auth::id();
+    
+  
+    if ($req->hasFile('album_thumb')) {
+        if ($album->album_thumb) {
+            Storage::delete($album->album_thumb);
         }
-        $res = $album->save();
         
-        $message = $res ? 'Album   ' . $album->album_name . ' Updated' : 'Album ' . $album->album_name . ' was not updated';
-        session()->flash('message', $message);
-        return redirect()->route('albums.index');
+        $album_thumb = $this->processFile($album->id, $req, $album);
+        $album->album_thumb = $album_thumb;
     }
+
+    $res = $album->save();
+    
+    if ($req->has('categories')) {
+        $album->categories()->sync($req->input('categories'));
+    }
+
+    $messaggio = $res ? 'Album con nome = ' . $album->album_name . ' Aggiornato' : 'Album ' . $album->album_name . ' Non aggiornato';
+    session()->flash('message', $messaggio);
+    
+    return redirect()->route('albums.index')->with('message', $messaggio);
+}
+
 
 
     /**
@@ -166,24 +185,31 @@ class AlbumsController extends Controller
     }
 
 
-    private function processFile($id, Request $req, $album): bool
+    private function processFile($id, Request $req, $album)
     {
-
         if (!$req->hasFile('album_thumb')) {
-            return false;
+            return null;
         }
-
+    
         $file = $req->file('album_thumb');
         if (!$file->isValid()) {
-            return false;
+            return null; 
         }
-
-
-        $filename = $id . '.' . $file->extension();
-        $filename = $file->storeAs(env('IMG_DIR'), $filename);
-        $album->album_thumb = $filename;
-        return true;
+    
+        $extension = $file->getClientOriginalExtension();
+        $filename = $id . '.' . $extension;
+        $filenameWithPath = env('ALBUM_THUMB_DIR') . '/' . $filename;
+    
+        $file->storeAs(env('ALBUM_THUMB_DIR'), $filename);
+    
+        return $filenameWithPath;
     }
+    
+
+    
+    
+    
+
 
     public function getImages(Album $album)
     {
