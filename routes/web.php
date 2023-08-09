@@ -36,12 +36,14 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function ()
 
     Route::get('/albums/{album}/edit', [AlbumsController::class, 'edit'])->name('albums.edit');
 
-    
     Route::patch('/albums/{album}/update', [AlbumsController::class, 'update'])->name('albums.update');
 
+    
 
  
 });
+
+
 
 
 Route::get('/dashboard', function () {

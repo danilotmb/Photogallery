@@ -34,22 +34,23 @@ class AlbumRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
-    {
-        $id = $this->route()->id;
-        
-        $ret = [
-            'album_name' => 'bail|required|unique:albums,',
-            'description' => 'required',
-            
+{
+    $id = $this->route('album');
+
+    $ret = [
+        'album_name' => 'bail|required|unique:albums,album_name',
+        'description' => 'required',
+    ];
+
+    if ($id) {
+        $ret['album_name'] = [
+            'required',
+            Rule::unique('albums', 'album_name')->ignore($id),
         ];
-
-        if ($id) {
-            $ret['album_name'][] = Rule::unique('albums', 'album_name')->ignore($id);
-        } else {
-            $ret['album_thumb'] = 'required|image';
-            $ret['album_name'] = Rule::unique('albums');
-        }
-
-        return $ret;
+    } else {
+        $ret['album_thumb'] = 'required|image';
     }
+
+    return $ret;
+}
 }

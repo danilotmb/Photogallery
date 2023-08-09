@@ -133,33 +133,33 @@ class AlbumsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(AlbumRequest $req, Album $album)
+    public function update(Request $request, Album $album)
 {
-    $album->album_name = $req->input('album_name');
-    $album->description = $req->input('description');
+    $album->album_name = $request->input('album_name');
+    $album->description = $request->input('description');
     $album->user_id = Auth::id();
     
-  
-    if ($req->hasFile('album_thumb')) {
+    if ($request->hasFile('album_thumb')) {
         if ($album->album_thumb) {
             Storage::delete($album->album_thumb);
         }
         
-        $album_thumb = $this->processFile($album->id, $req, $album);
+        $album_thumb = $this->processFile($album->id, $request, $album);
         $album->album_thumb = $album_thumb;
     }
 
     $res = $album->save();
     
-    if ($req->has('categories')) {
-        $album->categories()->sync($req->input('categories'));
+    if ($request->has('categories')) {
+        $album->categories()->sync($request->input('categories'));
     }
 
-    $messaggio = $res ? 'Album con nome = ' . $album->album_name . ' Aggiornato' : 'Album ' . $album->album_name . ' Non aggiornato';
+    $messaggio = $res ? 'Album: ' . $album->album_name . '-> Updated' : 'Problem updating ' . $album->album_name;
     session()->flash('message', $messaggio);
     
     return redirect()->route('albums.index')->with('message', $messaggio);
 }
+
 
 
 
