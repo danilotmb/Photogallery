@@ -36,17 +36,14 @@
                             {{$cat->albums_count}}
                         @endif
                     </td>
-                    <td class="d-flex justify-content-center">
-                        <a   id="upd-{{$cat->id}}" class="btn btn-outline-info m-1" 
-                                href="{{route('categories.edit',$cat->id )}}" title="UPDATE CATEGORY">
-
+                    <td class="text-center" style="padding-left: 20px;">
+                        <a id="upd-{{$cat->id}}" class="btn btn-outline-info m-1" href="{{route('categories.edit',$cat->id )}}" title="UPDATE CATEGORY">
                             <i class="bi bi-pen"></i>
-                            
                         </a>
                         <form action="{{route('categories.destroy', $cat->id)}}" method="post">
                             @csrf
                             @method('delete')
-                            <button id="btnDelete-{{$cat->id}} " class="btn btn-danger  m-1" title="DELETE CATEGORY"><i class="bi bi-trash"></i> </button>
+                            <button id="btnDelete-{{$cat->id}} " class="btn btn-danger  m-1" title="DELETE CATEGORY"><i class="bi bi-trash"></i></button>
                         </form>
                     </td>
                 </tr>
@@ -101,7 +98,8 @@
                         if(response.success){
                             //  alert(resp.responseText)
                             $('#'+Trid).fadeOut();
-                            // $(li).remove();
+                            dataTable.ajax.reload();
+
                         } else {
                             alert('Problem contacting server');
                         }
@@ -135,6 +133,7 @@
                 if(response.success){
                     f[0].category_name.value = '';
                     f[0].reset();
+                    dataTable.ajax.reload();
                 } else {
                     alert('Problem contacting server');
                 }
@@ -183,5 +182,11 @@
             });
         });
 
-    </script>
+
+        var cssLink = $('<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" type="text/css" />');
+
+        var jsScript = $(<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js">);
+            
+        
+        </script>
 @endsection
