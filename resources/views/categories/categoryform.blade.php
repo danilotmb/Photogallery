@@ -3,7 +3,7 @@
     <form id="manageCategoryForm" action="{{route('categories.update', $category->id)}}" method="post" class="row">
         @method('patch')
         @else
-            <h2 class="display-5">Manage or Create New category</h2>
+            <h2 class="display-5">Create New category</h2>
             <form  id="manageCategoryForm"  action="{{route('categories.store')}}" method="post" class="row">
 
                 @endif

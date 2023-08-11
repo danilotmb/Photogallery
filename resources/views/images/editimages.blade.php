@@ -1,75 +1,85 @@
-@php
-    /**
-     * @var $album App\Models\Album;
-     * */
-@endphp
-
 @extends('templates.default')
+
 @section('content')
     @php
         /**
-         * @var $album App\Models\Photo; 
+         * @var $album App\Models\Photo;
          */
     @endphp
 
-   @include('partials.inputerrors')
+    <style>
+        h2 {
+            font-size: 30px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
 
-    @if($photo->id)
-   
-        <h3>EDIT IMAGE : {{$album->album_name}}</h3>
+        .form-group label {
+            font-weight: bold;
+        }
 
+        .form-control {
+            width: 100%;
+        }
 
-        <form method="post" action="{{route('photos.update', $photo)}}" enctype="multipart/form-data">
+        .btn-primary {
+            background-color: green;
+            width: 120px;
+        }
+    </style>
 
-    @method('PATCH')
+    @include('partials.inputerrors')
 
-    @else
-            <h3>NEW IMAGE FOR ALBUM: {{$photo->name}}</h3>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        @if($photo->id)
+                            <h2 class="text-center display-4 fw-bold mb-4">EDIT IMAGE: {{ $album->album_name }}</h2>
+                        @else
+                            <h2 class="text-center display-4 fw-bold mb-4">NEW IMAGE FOR: {{ $album->album_name }}</h2>
+                        @endif
 
-            <form method="post" action="{{route('photos.store', $photo)}}" enctype="multipart/form-data">
-    @endif
+                        <form method="post" action="{{ $photo->id ? route('photos.update', $photo) : route('photos.store', $photo) }}" enctype="multipart/form-data">
+                            @csrf
+                            @if($photo->id)
+                                @method('PATCH')
+                            @endif
 
-    @csrf
+                            <div class="form-group">
+                                <label for="album_id">Album</label>
+                                <select name="album_id" id="album_id" class="form-control">
+                                    <option value="">SELECT</option>
+                                    @foreach ($albums as $item)
+                                        <option {{ $item->id === $album->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->album_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-    <div class="form-group">
-        <label for="album_id">Album</label>
-        <select  name="album_id" id="album_id">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input class="form-control" name="name" id="name" value="{{ $photo->name }}">
+                            </div>
 
-            <option value="">SELECT</option>
+                            @include('images.partials.fileupload')
 
-            @foreach ($albums as $item )
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" name="description" id="description">{{ $photo->description }}</textarea>
+                            </div>
 
-            <option {{$item->id === $album->id ? 'selected' : ''}} value="{{$item->id}}">{{$item->album_name}}</option>
-                
-            @endforeach
-
-        </select>
-    </div> 
-
-
-
-    <!--{{method_field('PATCH')}}
-    <input type="hidden" name="_method" value="PATCH">
-    -->
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input class="form-control" name="name" id="name" value="{{$photo -> name}}">
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-primary">DONE</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    
-    @include('images.partials.fileupload')
-
-    <div class="form-group">
-        <label for="description">Description</label>
-        <textarea class="form-control" name="description" id="description">{{$photo ->description}}</textarea>
-    </div>
-
-    <div class="form-group">
-
-        <button class="btn btn-primary">DONE</button>
-
-    </div>
-
-
-</form>
 @endsection
