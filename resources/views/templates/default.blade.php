@@ -38,7 +38,7 @@
         
         <div class="container-fluid">
            
-            <a class="navbar-brand" href="/dashboard/albums">PHOTOGALLERY</a>
+            <a class="navbar-brand" href="/gallery">PHOTOGALLERY</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                     aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -49,7 +49,7 @@
                 @auth
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/dashboard/albums">Home</a>
+                            <a class="nav-link active" aria-current="page" href="/gallery">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{route('albums.index')}}">Albums</a>

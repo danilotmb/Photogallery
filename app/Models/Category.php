@@ -24,8 +24,8 @@ class Category extends Model
     }
 
     public function scopeGetCategoriesByUserId(Builder $builder, User $user)
-    {
-        $builder->whereUserId($user->id)->withCount('albums')->orderBy('category_name');
-    }
+{
+    return $builder->where('user_id', $user->id)->withCount('albums')->orderBy('category_name');
+}
 
 }

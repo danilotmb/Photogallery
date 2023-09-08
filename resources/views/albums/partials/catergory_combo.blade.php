@@ -18,10 +18,10 @@
 </style>
 
 <div class="form-group">
-    <label for="categories">Categories</label>
+    <label for="categories">Categories (press cntr/cmd for multiple selection)</label>
     <input type="hidden" name="selectedCategories" value="@json($selectedCategories)">
     
-    <select multiple class="form-select" aria-label="Default select example">
+    <select multiple class="form-select" aria-label="Default select example" onchange="updateSelectedCount(this)">
         @foreach($categories as $cat)
             <option
                 {{ in_array($cat->id, $selectedCategories, true) ? 'selected' : '' }}
@@ -31,11 +31,9 @@
             </option>
         @endforeach
     </select>
-
-    <p id="selectedCount">Selected categories: {{ count($selectedCategories) }}</p>
     
+    <p id="selectedCount">Selected categories: {{ count($selectedCategories) }}</p>
 </div>
-
 
 <script>
     function updateSelectedCount(selectElement) {

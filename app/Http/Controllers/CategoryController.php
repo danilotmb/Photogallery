@@ -21,13 +21,16 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-       // $categories =auth()->user()->categories()->paginate(10);
+{
+    $user = auth()->user();
+    
+    $categories = Category::getCategoriesByUserId(auth()->user())->paginate(10);
 
-        $categories = Category::getCategoriesByUserId(auth()->user())->paginate(10);
-        $category = new Category();
-        return view('categories.index', compact('categories', 'category'));
-    }
+    
+    $category = new Category();
+    
+    return view('categories.index', compact('categories', 'category'));
+}
 
     /**
      * Show the form for creating a new resource.

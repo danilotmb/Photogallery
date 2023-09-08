@@ -1,68 +1,67 @@
 @extends('templates.default')
 @section('content')
 
-
 @if(session()->has('message'))
-<x-alert-info>{{session()->get('message')}}</x-alert-info>
+    <x-alert-info>{{session()->get('message')}}</x-alert-info>
 @endif
 
 <div class="row">
     <div class="col-sm-8">
         <h1 class="display-4">Category List</h1>
         <table class="table table-hover" id="categoryList">
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Created</th>
-                <th>Updated</th>
-                <th>Albums</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @forelse( $categories as $cat)
-                <tr id="tr-{{$cat->id}}">
-                    <td>{{$cat->id}}</td>
-                    <td id="catid-{{$cat->id}}">{{$cat->category_name}}</td>
-                    <td>{{$cat->created_at->format('Y-m-d H:i')}}</td>
-                    <td>{{$cat->updated_at->format('Y-m-d H:i')}}</td>
-                    <td>
-                        @if($cat->albums_count > 0)
-                        <a class="btn btn-success" href="{{route('albums.index')}}?category_id={{$cat->id}}"> {{$cat->albums_count}}</a>
-                        @else
-                            {{$cat->albums_count}}
-                        @endif
-                    </td>
-                    <td class="text-center" style="padding-left: 20px;">
-                        <a id="upd-{{$cat->id}}" class="btn btn-outline-info m-1" href="{{route('categories.edit',$cat->id )}}" title="UPDATE CATEGORY">
-                            <i class="bi bi-pen"></i>
-                        </a>
-                        <form action="{{route('categories.destroy', $cat->id)}}" method="post">
-                            @csrf
-                            @method('delete')
-                            <button id="btnDelete-{{$cat->id}} " class="btn btn-danger  m-1" title="DELETE CATEGORY"><i class="bi bi-trash"></i></button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tfoot>
+            <thead>
                 <tr>
-                    <th colspan="5">No categories</th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Albums</th>
+                    <th>Actions</th>
                 </tr>
-                </tfoot>
+            </thead>
+            <tbody>
+                @forelse($categories as $cat)
+                    <tr id="tr-{{$cat->id}}">
+                        <td>{{$cat->id}}</td>
+                        <td id="catid-{{$cat->id}}">{{$cat->category_name}}</td>
+                        <td>{{$cat->created_at->format('Y-m-d H:i')}}</td>
+                        <td>{{$cat->updated_at->format('Y-m-d H:i')}}</td>
+                        <td>
+                            @php
+                                $userAlbumCount = $cat->albums()
+                                    ->where('user_id', auth()->id()) // Filtra solo gli album dell'utente loggato
+                                    ->count();
+                            @endphp
+                        
+                            @if($userAlbumCount > 0)
+                                <a class="btn btn-success" href="{{ route('albums.index') }}?category_id={{ $cat->id }}">
+                                    {{ $userAlbumCount }}
+                                </a>
+                            @else
+                                {{ $userAlbumCount }}
+                            @endif
+                        </td>
+                        <td class="text-center" style="padding-left: 20px;">
+                            <a id="upd-{{$cat->id}}" class="btn btn-outline-info m-1" href="{{ route('categories.edit', $cat->id) }}" title="UPDATE CATEGORY">
+                                <i class="bi bi-pen"></i>
+                            </a>
+                            <form action="{{ route('categories.destroy', $cat->id) }}" method="post">
+                                @csrf
+                                @method('delete')
+                                <button id="btnDelete-{{$cat->id}}" class="btn btn-danger m-1" title="DELETE CATEGORY">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tfoot>
+                        <tr>
+                            <th colspan="5">No categories</th>
+                        </tr>
+                    </tfoot>
                 @endforelse
-
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th colspan="5">
-                        {{$categories->links('vendor.pagination.bootstrap-5')}}
-                </th>
-            </tr>
+            </tbody>
         </table>
     </div>
     <div class="col-sm-4">
@@ -70,6 +69,7 @@
     </div>
 </div>
 @endsection
+
 
 @section('footer')
    @parent
