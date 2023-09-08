@@ -1,7 +1,8 @@
 <div class="form-group">
     <label for="album_thumb">Thumbnail</label>
+    <div style="height: 8px;"></div>
     <div class="custom-file">
-        <input  type="file" class="custom-file-input" name="album_thumb" id="album_thumb">
+        <input type="file" class="custom-file-input" name="album_thumb" id="album_thumb">
     </div>
 </div>
 
@@ -17,3 +18,6 @@
     >
 </div>
 @endif
+
+<!-- Spazio di 15px al di sotto del div -->
+<div style="height: 15px;"></div>

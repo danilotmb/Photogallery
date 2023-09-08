@@ -1,6 +1,10 @@
 @extends('templates.default')
 @section('content')
-
+<style>
+label {
+    font-weight: bold !important;
+}
+</style>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -13,8 +17,9 @@
                         @csrf
                         <div class="mb-3">
                             <label for="album_name" class="form-label">Album Name</label>
-                            <input type="text" class="form-control" name="album_name" id="album_name" placeholder="Enter Album Name" value="{{old('album_name')}}">
+                            <input type="text" class="form-control" name="album_name" id="album_name" placeholder="Enter Album Name" value="{{ old('album_name') }}" style="border-radius: 6px;">
                         </div>
+                        
 
                         @include('albums.partials.fileupload')
 
