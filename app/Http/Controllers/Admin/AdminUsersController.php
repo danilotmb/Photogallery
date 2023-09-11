@@ -25,39 +25,30 @@ class AdminUsersController extends Controller
     private function getUserButtons(User $user)
     {
         $id = $user->id;
-
-
-        $buttonEdit= '<a class="btn btn-sm btn-secondary" style="cursor:default" disable><i  class="bi bi-pen"></i></a>&nbsp;';
-
-
-        if($user->deleted_at)
-        {
+    
+        $buttonEdit = '<a href="'.route('users.edit', ['user' => $id]).'" id="edit-'.$id.'" 
+                        class="btn btn-sm btn-primary"><i class="bi bi-pen" style="font-size: 20px;"></i></a>&nbsp;';
+    
+        if ($user->deleted_at) {
             $deleteRoute = route('admin.userRestore', ['user' => $id]);
             $btnClass = 'btn-success';
-            $iconDelete = '<i class="bi bi-arrow-clockwise"></i>';
+            $iconDelete = '<i class="bi bi-arrow-clockwise" style="font-size: 20px;"></i>';
             $btnId = 'restore-'.$id;
             $btnTitle = 'Restore';
-        }
-        else{
-            $buttonEdit= '<a href="'.route('users.edit', ['user'=> $id]).'" id="edit-'.$id.'" 
-                            class="btn btn-sm btn-primary"><i  class="bi bi-pen"></i></a>&nbsp;';
+        } else {
             $deleteRoute = route('users.destroy', ['user' => $id]);
-            $iconDelete = '<i class="bi bi-trash"></i>';
+            $iconDelete = '<i class="bi bi-trash" style="font-size: 20px;"></i>';
             $btnClass = 'btn-warning';
             $btnId = 'delete-'.$id;
             $btnTitle = 'Soft Delete';
-
-
-
-
-
         }
-        $buttonDelete = "<a  href='$deleteRoute' title='$btnTitle' id='$btnId'
-                            class=' ajax $btnClass btn btn-sm '>$iconDelete</a>&nbsp;";
-
-        $buttonForceDelete = '<a href="'.route('users.destroy', ['user'=> $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" 
-                            class="ajax btn btn-sm btn-danger"><i class="bi bi-exclamation-triangle"></i></i> </a>';
-
+    
+        $buttonDelete = "<a href='$deleteRoute' title='$btnTitle' id='$btnId'
+                            class='ajax $btnClass btn btn-sm'>$iconDelete</a>&nbsp;";
+    
+        $buttonForceDelete = '<a href="'.route('users.destroy', ['user' => $id]).'?hard=1" title="hard delete" id="forcedelete-'.$id.'" 
+                            class="ajax btn btn-sm btn-danger"><i class="bi bi-exclamation-triangle" style="font-size: 20px;"></i></a>';
+    
         return $buttonEdit.$buttonDelete.$buttonForceDelete;
     }
 

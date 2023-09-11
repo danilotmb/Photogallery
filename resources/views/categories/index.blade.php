@@ -189,4 +189,13 @@
             
         
         </script>
+
+        
+               
+                    
+            <div class="col-md-8 offset-md-2 d-flex justify-content-center">
+                 {{$categories->links('vendor.pagination.bootstrap-5')}}
+            </div>
+                    
+  
 @endsection
