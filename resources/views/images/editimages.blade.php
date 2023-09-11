@@ -55,11 +55,12 @@
                                 <label for="album_id">Album</label>
                                 <select name="album_id" id="album_id" class="form-control">
                                     <option value="">SELECT</option>
-                                    @foreach ($albums as $item)
-                                        <option {{ $item->id === $album->id ? 'selected' : '' }} value="{{ $item->id }}">{{ $item->album_name }}</option>
+                                    @foreach ($userAlbums as $userAlbum)
+                                        <option {{ $userAlbum->id === $album->id ? 'selected' : '' }} value="{{ $userAlbum->id }}">{{ $userAlbum->album_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            
 
                             <div class="form-group">
                                 <label for="name">Name</label>

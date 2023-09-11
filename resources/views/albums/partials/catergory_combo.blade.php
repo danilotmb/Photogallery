@@ -36,7 +36,7 @@
     
     <input type="text" id="categorySearch" class="form-control" placeholder="Search categories" style="border-radius: 6px;">
         
-    <select multiple class="form-select" aria-label="Default select example" id="categories" style="border-radius: 6px;">
+    <select multiple name="categories[]" class="form-select" aria-label="Default select example" id="categories" style="border-radius: 6px;">
         @foreach($categories as $cat)
             <option
                 {{ in_array($cat->id, $selectedCategories, true) ? 'selected' : '' }}

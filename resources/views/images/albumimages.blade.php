@@ -26,8 +26,11 @@
                 <td>{{$image->name}}</td>
                 <td>{{$album->album_name}}</td>
                 <td>
-                    <img width="120" src="{{asset($image->img_path)}}">
+                    @if ($image->img_path)
+                        <img width="120" src="{{ asset('storage/' . $image->img_path) }}" alt="{{ $image->name }}" title="{{ $image->name }}">
+                    @endif
                 </td>
+                
                 <td>
                     <a class="btn btn-primary" href="{{route('photos.edit', $image)}}">UPDATE</a>
                     <a class="btn btn-danger" href="{{route('photos.destroy', $image)}}">DELETE</a>

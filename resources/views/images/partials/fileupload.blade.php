@@ -1,16 +1,16 @@
 <div class="form-group">
-    <label for="album_thumb">Thumbnail</label>
+    <label for="img_path">Image</label>
     <div class="custom-file">
-        <input  type="file" class="custom-file-input" name="album_thumb" id="album_thumb">
+        <input type="file" class="custom-file-input" name="img_path" id="img_path">
     </div>
 </div>
 
-@if ($album->album_thumb)
+@if ($image->img_path)
 <div class="mb-3">
     <img
-        src="{{ asset($album->album_thumb) }}"
-        alt="{{ $album->album_name }}"
-        title="{{ $album->album_name }}"
+        src="{{ asset($image->img_path) }}"
+        alt="{{ $image->name }}"
+        title="{{ $image->name }}"
         width="150"
         height="150"
         style="max-width: 100%; height: auto;"

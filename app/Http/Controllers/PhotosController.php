@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Photo;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -36,13 +38,22 @@ class PhotosController extends Controller
     public function create(Request $req)
     {
         $photo = new Photo();
-
+    
+        $image = new Photo();
+    
         $album = $req->album_id ? Album::findOrFail($req->album_id) : new Album();
-
+    
+        // Recupera gli album dell'utente loggato
+        $userAlbums = Album::where('user_id', FacadesAuth::id())->get();
+    
         $albums = $this->getAlbums();
-
-        return view('images.editimages', compact('album', 'photo', 'albums'));
+    
+        return view('images.editimages', compact('album', 'photo', 'albums', 'userAlbums', 'image'));
     }
+    
+    
+    
+    
 
     /**
      * Store a newly created resource in storage.
@@ -125,17 +136,20 @@ class PhotosController extends Controller
         return $res;
     }
 
-    public function processFile ( Request $request, Photo $photo)
-    {
-        $file = $request->file('img_path');
+    public function processFile(Request $request, Photo $photo)
+{
+    $file = $request->file('img_path');
 
-        $name = preg_replace('@[^a-z0-9]i@', '_', $photo->name);
+    $name = preg_replace('@[^a-z0-9]i@', '_', $photo->name);
 
-        $filename= $name.'.'.$file->extension();
-        $thumbnail= $file ->storeAs(config('filesystems.img_dir') . $photo->album_id, $filename );
-        $photo->img_path = $thumbnail;
-        //$photo->save();
-    }
+    $filename = $name . '.' . $file->extension();
+    
+    // Salva l'immagine nella directory delle album_thumb
+    $thumbnail = $file->storeAs('public/storage/images/album_thumb', $filename);
+
+    // Aggiorna il percorso dell'immagine nel modello
+    $photo->img_path = 'storage/images/album_thumb/' . $filename;
+}
 
     public function getAlbums() : Collection
     {
