@@ -13,7 +13,7 @@
         title="{{ $image->name }}"
         width="150"
         height="150"
-        style="max-width: 100%; height: auto;"
+        style="max-width: 100%; height: 150px;"
     >
 </div>
 @endif
