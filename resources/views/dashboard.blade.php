@@ -15,3 +15,9 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    setTimeout(function() {
+        window.location.href = '/gallery';
+    }, 3000); //(3 secondi)
+</script>
