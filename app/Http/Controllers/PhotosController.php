@@ -144,10 +144,8 @@ class PhotosController extends Controller
 
     $filename = $name . '.' . $file->extension();
     
-    // Salva l'immagine nella directory delle album_thumb
     $thumbnail = $file->storeAs('public/storage/images/album_thumb', $filename);
 
-    // Aggiorna il percorso dell'immagine nel modello
     $photo->img_path = 'storage/images/album_thumb/' . $filename;
 }
 

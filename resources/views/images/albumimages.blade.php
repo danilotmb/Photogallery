@@ -14,13 +14,13 @@
             <th> TITLE</th>
             <th> ALBUM</th>
             <th> THUMBNAIL</th>
-            <th>&nbsp;</th>
+            <th>ACTIONS</th>
         </tr>
         </thead>
         <tbody>
         @forelse($images as $image)
 
-            <tr>
+            <tr style="vertical-align: middle;">
                 <td>{{$image->id}}</td>
                 <td>{{$image->created_at}}</td>
                 <td>{{$image->name}}</td>
