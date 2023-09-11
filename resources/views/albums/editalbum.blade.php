@@ -24,8 +24,8 @@
         align-items: center;
     }
 
-    /* Stile globale per tutte le etichette con font in grassetto */
-    label {
+    label 
+    {
         font-weight: bold !important;
     }
 </style>

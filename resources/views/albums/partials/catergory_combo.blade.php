@@ -55,6 +55,8 @@
 </div>
 
 <script>
+
+    
     function updateSelectedCount(selectElement) {
         const selectedCountElement = document.getElementById("selectedCount");
         const selectedCount = selectElement.selectedOptions.length;
@@ -64,11 +66,11 @@
     document.getElementById("categorySearch").addEventListener("input", function() {
         const searchTerm = this.value.toLowerCase();
         const selectElement = document.getElementById("categories");
-        
+
         Array.from(selectElement.options).forEach(option => {
             const categoryName = option.textContent.toLowerCase();
             const shouldShow = categoryName.includes(searchTerm);
-            
+
             if (shouldShow) {
                 option.style.display = "block";
             } else {
@@ -81,19 +83,17 @@
     const selectedCategoriesInput = document.getElementById("selectedCategories");
 
     document.getElementById("categories").addEventListener("change", function() {
-        // Quando si verifica una modifica nella selezione delle categorie
         selectedCategoriesContainer.innerHTML = ""; // Cancella le categorie precedenti
-        
-        // Ottieni le opzioni selezionate
+
         const selectedOptions = Array.from(this.selectedOptions);
-        
-        // Aggiungi le categorie selezionate al contenitore
+
         selectedOptions.forEach(option => {
             const categoryId = option.value;
             const categoryName = option.textContent;
             addSelectedCategory(categoryId, categoryName);
         });
     });
+
 
     function addSelectedCategory(categoryId, categoryName) {
         // Crea un pulsante per la categoria selezionata
@@ -102,38 +102,71 @@
         button.textContent = categoryName;
         button.setAttribute("data-category-id", categoryId);
 
-        // Aggiungi un gestore per rimuovere la categoria quando si fa clic sulla "x"
-        button.addEventListener("click", function() {
+        // Disable in modo che non possa essere cliccato
+        button.disabled = true;
+
+        //"X" per rimuovere la categoria
+        const removeIcon = document.createElement("span");
+        removeIcon.textContent = "X";
+        removeIcon.className = "selected-category-remove";
+
+        //gestore di eventi clic all'icona "X"
+        removeIcon.addEventListener("click", function(event) {
+            event.preventDefault(); // Impedisci l'azione predefinita (ad es. l'invio del form)
             const categoryIdToRemove = button.getAttribute("data-category-id");
             removeSelectedCategory(categoryIdToRemove);
+            // Mostra nuovamente l'opzione nel menu a discesa
+            showOption(categoryIdToRemove);
         });
 
-        // Aggiungi il pulsante al contenitore delle categorie selezionate
+        // Aggiunta icona "X" al pulsante delle categorie tramite appendChild
+        button.appendChild(removeIcon);
+
+        // Aggiungta pulsante al contenitore delle categorie selezionate
         selectedCategoriesContainer.appendChild(button);
 
-        // Aggiungi l'ID della categoria all'input nascosto
+        //l'ID della categoria all'input nascosto
         const selectedCategories = JSON.parse(selectedCategoriesInput.value || "[]");
         selectedCategories.push(categoryId);
         selectedCategoriesInput.value = JSON.stringify(selectedCategories);
+
+        // Nascondi l'opzione corrispondente nel menu a discesa
+        hideOption(categoryId);
     }
 
     function removeSelectedCategory(categoryId) {
-        // Rimuovi il pulsante dalla vista
         const buttonToRemove = selectedCategoriesContainer.querySelector(`[data-category-id="${categoryId}"]`);
         if (buttonToRemove) {
             selectedCategoriesContainer.removeChild(buttonToRemove);
         }
 
-        // Rimuovi l'ID della categoria dall'input nascosto
         const selectedCategories = JSON.parse(selectedCategoriesInput.value || "[]");
         const index = selectedCategories.indexOf(categoryId);
         if (index !== -1) {
             selectedCategories.splice(index, 1);
             selectedCategoriesInput.value = JSON.stringify(selectedCategories);
         }
+
+        // Mostra nuovamente l'opzione nel menu a discesa
+        showOption(categoryId);
     }
 
-    // Carica le categorie selezionate inizialmente
+    function hideOption(categoryId) {
+        const selectElement = document.getElementById("categories");
+        const optionToHide = selectElement.querySelector(`[value="${categoryId}"]`);
+        if (optionToHide) {
+            optionToHide.style.display = "none";
+        }
+    }
+
+    function showOption(categoryId) {
+        const selectElement = document.getElementById("categories");
+        const optionToShow = selectElement.querySelector(`[value="${categoryId}"]`);
+        if (optionToShow) {
+            optionToShow.style.display = "block";
+        }
+    }
+
     const selectedOptions = Array.from(document.getElementById("categories").selectedOptions);
     selectedOptions.forEach(option => {
         const categoryId = option.value;
