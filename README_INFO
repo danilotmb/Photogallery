@@ -1,0 +1,16 @@
+Salve a tutti, questa repository racchiude l'intero progetto Photogallery sviluppato in php usufrendo del framework Laravel.
+Questo progetto è stato iniziato e completato durante la mia esperienza di Stage presso Etic Srl.
+L'obiettivo era creare una photogallery online che permettesse di creare, cancellare, modificare album e foto dopo aver eseguito il login o la registrazione. 
+Il tutto era collegato ad un DB in modo da conservare i dati ( dati inseriti in modo randomico tramite i seeders). 
+La web app inoltre include una pagina dedicata agli admin per la totale gestione degli utenti registrati e un servizio di notificazione tramite mail qualora 
+un nuovo album venisse creato o un nuovo utente registrato. Oltre a questo, c'è molto altro in questo progetto!
+Grazie per l'attenzione.
+
+ENG Version: 
+Hello everyone,
+This repository encompasses the entire Photogallery project developed in PHP using the Laravel framework. The project was initiated and completed during my internship at Etic Srl.
+The objective was to create an online photogallery that allows users to create, delete, and modify albums and photos after logging in or registering. All the data was connected 
+to a database to preserve the information (data was initially seeded in a randomized manner).
+Furthermore, the web application includes an admin page for the complete management of registered users and a notification service 
+via email in case a new album is created or a new user registers. There's much more to explore in this project!
+Thank you for your attention.
